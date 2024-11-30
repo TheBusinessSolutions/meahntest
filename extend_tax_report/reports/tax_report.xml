@@ -1,0 +1,236 @@
+<odoo>
+    <data>
+        <template id="accounting_pdf_reports.report_tax">
+            <t t-call="web.html_container">
+                <t t-set="data_report_dpi" t-value="110" />
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Open Sans', sans-serif;">
+                        <h3 style="text-align:center;">Tax Report</h3>
+                        <table style="border: 0px solid black;width: 100%; direction: ltr;">
+                            <div class="col-4">
+                                <strong>Company:</strong>
+                                <span t-esc="res_company.name" />
+                            </div>
+                            <div class="col-4">
+                                <t>
+                                    <strong>Date:</strong>
+                                    <span t-esc="data['date_from']" />
+                                </t>
+                                <span> - </span>
+                                <t>
+                                    <span t-esc="data['date_to']" />
+                                </t>
+                            </div>
+                            <div class="col-4">
+                                <strong>Target Moves:</strong>
+                                <t>
+                                    <span t-if="data['target_move'] == 'all'">All Entries</span>
+                                    <span t-if="data['target_move'] == 'posted'">All Posted Entries</span>
+                                </t>
+                            </div>
+                        </table>
+                        <br />
+                        <strong>Total Tax Details</strong>
+                        <br />
+
+                        <table class="table table-sm table-reports"
+                            style="border: 0px solid black;width: 50%; float:left; direction: ltr;">
+                            <tr align="left">
+                                <th style="border:1px solid black;background-color:#e9ecef; text-align:center;">Sale</th>
+                                <th style="border:1px solid black;background-color:#e9ecef; text-align:center;">Net</th>
+                                <th style="border:1px solid black;background-color:#e9ecef; text-align:center;">Tax</th>
+                            </tr>
+                            <t t-foreach="lines['sale']" t-as="line">
+                                <tr align="left">
+                                    <td style="font-weight:bold; border:1px solid black;text-align:center;">
+                                        <span t-esc="line.get('name')" />
+                                    </td>
+                                    <td style="font-weight:bold;border:1px solid black;text-align:center;">
+                                        <span t-att-style="style" t-esc="line.get('net')"
+                                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+                                    </td>
+                                    <td style="font-weight:bold;border:1px solid black;text-align:center;">
+                                        <span t-att-style="style" t-esc="line.get('tax')"
+                                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <table class="table table-sm table-reports"
+                            style="border: 0px solid black;width: 50%; float:right; direction: ltr;">
+                            <tr align="left">
+                                <th style="text-align:center; border-left:3px solid black;border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;background-color:#e9ecef">Purchase</th>
+                                <th style="border:1px solid black;background-color:#e9ecef;text-align:center;">Net</th>
+                                <th style="border:1px solid black;background-color:#e9ecef;text-align:center;">Tax</th>
+                            </tr>
+                            <t align="left" t-foreach="lines['purchase']" t-as="liner">
+                                <tr align="left">
+                                    <td style="border-left:3px solid black;border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;text-align:center;">
+                                        <span t-esc="liner.get('name')" />
+                                    </td>
+                                    <td style="border:1px solid black;text-align:center;">
+                                        <span t-att-style="style" t-esc="liner.get('net')"
+                                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+                                    </td>
+                                    <td style="border:1px solid black;background-color:white;text-align:center;">
+                                        <span t-att-style="style" t-esc="liner.get('tax')"
+                                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" />
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <br /><br /><br /><br />
+                        <strong>Sales Tax Details</strong>
+                        <table class="table table-sm table-reports"
+                            style="border: 0px solid black;width: 100%; font-size:11px; direction: ltr;">
+                            <t t-foreach="lines['sale']" t-as="line">
+                                <tr>
+                                    <td colspan="8" style="font-weight:bold; border:1px solid black; width:3%;vertical-align: middle; text-align:center; background-color:#e9ecef">
+                                        <span t-esc="line.get('name')" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold; border:1px solid black; width:3%;vertical-align: middle; text-align:center; background-color:#e9ecef">
+                                        <span>#</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:10%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Date</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:15%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Source</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:20%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Customer</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:15%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Tax ID</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:5%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Debit</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:5%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Credit</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:5%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Balance</span>
+                                    </td>
+                                </tr>
+                                <t t-set="i" t-value="1" />
+                                <t t-set="totalBalance" t-value="0.0" />
+                                <tr t-foreach="line['vals']" t-as="tax_line">
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="i" />
+                                        <t t-set="i" t-value="i + 1" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_line[3]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_line[0]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_line[4]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_line[5]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_line[1]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_line[2]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;background-color:white;">
+                                        <t t-set="debit" t-value="float(tax_line[1] or 0)" />
+                                        <t t-set="credit" t-value="float(tax_line[2] or 0)" />
+                                        <t t-set="totalBalance" t-value="totalBalance + debit - credit" />
+                                        <span t-esc="totalBalance" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <br />
+                        </table>
+                        <br />
+                        <strong>Purchase Tax Details</strong>
+                        <table class="table table-sm table-reports"
+                            style="border: 0px solid black;width: 100%; font-size:11px; direction: ltr;">
+                            <t t-foreach="lines['purchase']" t-as="liner">
+                                <tr>
+                                    <td colspan="9" style="font-weight:bold; border:1px solid black; width:3%;vertical-align: middle; text-align:center; background-color:#e9ecef">
+                                        <span t-esc="liner.get('name')" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold; border:1px solid black; width:3%;vertical-align: middle; text-align:center; background-color:#e9ecef">
+                                        <span>#</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:10%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Date</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:15%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Source</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:20%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Vendor</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:15%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Tax ID</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:10%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Ref</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:5%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Debit</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:5%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Credit</span>
+                                    </td>
+                                    <td style="font-weight:bold; border:1px solid black; width:5%;vertical-align: middle;text-align:center; background-color:#e9ecef">
+                                        <span>Balance</span>
+                                    </td>
+                                </tr>
+                                <t t-set="i" t-value="1" />
+                                <t t-set="totalBalance" t-value="0.0" />
+                                <tr t-foreach="liner['vals']" t-as="tax_liner">
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="i" />
+                                        <t t-set="i" t-value="i + 1" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[3]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[0]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[4]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[5]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[6]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[1]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;">
+                                        <span t-esc="tax_liner[2]" />
+                                    </td>
+                                    <td style="border:1px black solid;vertical-align: middle;text-align:center;background-color:white;">
+                                        <t t-set="debit" t-value="float(tax_liner[1] or 0)" />
+                                        <t t-set="credit" t-value="float(tax_liner[2] or 0)" />
+                                        <t t-set="totalBalance" t-value="totalBalance + debit - credit" />
+                                        <span t-esc="totalBalance" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <br />
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>
